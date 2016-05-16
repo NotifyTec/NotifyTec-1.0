@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_principal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.notifytec.EsqueciSenha">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="720dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2.0"
+        android:src="@drawable/ic_principal" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5">
+
+        <EditText
+            android:id="@+id/edRA_CPF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edRA_CPF"
+            android:layout_marginBottom="30dp"
+            android:imeOptions="actionGo"
+            android:inputType="number"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnNextStep"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/red_principal"
+            android:text="@string/btnProximoPasso"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnVoltar"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/gray_principal"
+            android:text="@string/btnVoltar"
+            android:textColor="@color/red_principal"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

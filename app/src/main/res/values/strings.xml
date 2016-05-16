@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">NotifyTec</string>
+
+    <!-- Strings related to login -->
+    <string name="edLogin">Login</string>
+    <string name="edSenha">Senha</string>
+    <string name="btnLogin">LOGIN</string>
+    <string name="btnEsqueciSenha">ESQUECI A SENHA</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_login">Login inválido</string>
+    <string name="error_invalid_senha">Senha inválida</string>
+    <string name="error_invalid_autenticacao">Login e/ou senha inválidos</string>
+    <string name="error_field_required">Campo obrigatório</string>
+    <string name="error_cpf_invalid">CPF inválido</string>
+    <string name="error_RA_CPF_invalido">R.A. ou CPF inválido</string>
+    <string name="error_token_invalid">Token inválido</string>
+    <string name="error_senhas_diferentes">Senhas diferentes</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <string name="btnProximoPasso">PRÓXIMO PASSO</string>
+    <string name="edRA_CPF">R.A ou CPF</string>
+
+    <string name="btnAlterarSenha">ALTERAR SENHA</string>
+    <string name="btnVoltar">VOLTAR</string>
+    <string name="edAltSenha_Token">Token</string>
+    <string name="edNova_Senha">Nova Senha</string>
+    <string name="edConfNova_Senha">Confirmar Nova Senha</string>
+
+    <string name="btnConfirmar">CONFIRMAR</string>
+
+    <string name="txtInfoFirstAcess">Primeiro acesso ao APP. Por favor, informe uma senha para substituir a padrão</string>
+    <string name="txtInfoToken">Informe o token recebido por e-mail e a nova senha</string>
+    <string name="title_activity_menu_principal">MenuPrincipal</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+</resources>
