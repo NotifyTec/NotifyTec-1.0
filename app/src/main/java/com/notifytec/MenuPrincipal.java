@@ -1,12 +1,9 @@
 package com.notifytec;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import outros.VarConst;
@@ -41,8 +38,10 @@ public class MenuPrincipal extends AppCompatActivity implements NavigationView.O
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    Intent tela = new Intent(getBaseContext(), novo_notificacao.class);
+                    startActivity(tela);
+//                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
                 }
             });
         }
@@ -66,7 +65,8 @@ public class MenuPrincipal extends AppCompatActivity implements NavigationView.O
 
         //Exibindo emptyState
         if (!VarConst.novasnotificacoes){
-
+            ImageView emptyState = (ImageView) findViewById(R.id.img_emptyState);
+            emptyState.setVisibility(View.VISIBLE);
         }
     }
 
@@ -87,12 +87,14 @@ public class MenuPrincipal extends AppCompatActivity implements NavigationView.O
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-            // Handle the camera action
+            setTitle(getString(R.string.title_activity_menu_principal));
         } else if (id == R.id.nav_aviso) {
-
+            setTitle(getString(R.string.title_activity_menu_principal_aviso));
         } else if (id == R.id.nav_enquete) {
-
+            setTitle(getString(R.string.title_activity_menu_principal_enquete));
         } else if (id == R.id.nav_logout) {
+            Intent tela = new Intent(getBaseContext(), LoginActivity.class);
+            startActivity(tela);
             finish();
         }
 

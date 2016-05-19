@@ -32,11 +32,40 @@
 
     <string name="txtInfoFirstAcess">Primeiro acesso ao APP. Por favor, informe uma senha para substituir a padrão</string>
     <string name="txtInfoToken">Informe o token recebido por e-mail e a nova senha</string>
-    <string name="title_activity_menu_principal">MenuPrincipal</string>
+    <string name="title_activity_menu_principal">Menu Principal</string>
+    <string name="title_activity_menu_principal_aviso">Avisos</string>
+    <string name="title_activity_menu_principal_enquete">Enquetes</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_novo_notificacao">Nova Notificação</string>
+
+    <string name="novaNot_titulo">Título</string>
+    <string name="novaNot_descri">Descrição</string>
+    <string name="novaNot_curso">Curso</string>
+    <string name="novaNot_periodo">Período</string>
+    <string name="novaNot_expira">Expira em</string>
+    <string name="novaNot_opcao">Opção</string>
+    <string name="txtNovaOpcEnquete">*Use opção para criar enquetes</string>
+
+
+    <string-array name="curso_array">
+        <item>ADS - Tarde</item>
+        <item>ADS - Noite</item>
+        <item>PI</item>
+        <item>Agro</item>
+        <item>SI</item>
+    </string-array>
+
+    <string-array name="periodo_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 
 </resources>

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import funcoes.ValidarCPF;
+import funcoes.Funcoes;
 
 public class EsqueciSenha extends AppCompatActivity {
     private boolean cancel;
@@ -43,7 +43,7 @@ public class EsqueciSenha extends AppCompatActivity {
                     cancel = true;
                 }
                 //É CPF. --> Validando
-                else if ( (isCPF(ra_cpf)) && (!ValidarCPF.isCPF(ra_cpf)) ){
+                else if ( (isCPF(ra_cpf)) && (!Funcoes.isCPFValid(ra_cpf)) ){
                     //CPF inválido
                     edRA_CPF.setError(getString(R.string.error_cpf_invalid));
                     edRA_CPF.requestFocus();

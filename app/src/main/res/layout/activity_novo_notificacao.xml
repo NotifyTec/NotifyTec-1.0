@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.notifytec.MenuPrincipal">
+    tools:context="com.notifytec.novo_notificacao">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -13,16 +13,16 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_novonotificacao"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/blue_principal"
+            android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:navigationIcon="@drawable/ic_arrow_left" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_menu_principal" />
+    <include layout="@layout/content_novo_notificacao" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -30,16 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_tooltip_outline_plus"
-        android:visibility="gone" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/img_emptyState"
-        android:scaleType="centerInside"
-        android:src="@drawable/img_empty_state"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"/>
+        android:src="@drawable/ic_menu_send" />
 
 </android.support.design.widget.CoordinatorLayout>

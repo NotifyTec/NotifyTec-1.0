@@ -35,6 +35,10 @@
         <activity
             android:name=".MenuPrincipal"
             android:label="@string/title_activity_menu_principal"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".novo_notificacao"
+            android:label="@string/title_activity_novo_notificacao"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

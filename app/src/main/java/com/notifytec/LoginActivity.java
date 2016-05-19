@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             VarConst.usuario_logado = "2";
             VarConst.nome_usu_logado = "Jederson Donizete Zuchi";
             VarConst.podeEnviar = true;
-            VarConst.novasnotificacoes = true;
+            VarConst.novasnotificacoes = true ;
         }
 
         Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
