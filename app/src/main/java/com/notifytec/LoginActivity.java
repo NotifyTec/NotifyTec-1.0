@@ -33,8 +33,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.notifytec.contratos.Resultado;
+import com.notifytec.contratos.Token;
+import com.notifytec.service.LoginService;
+import com.notifytec.service.NotificacaoService;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import outros.VarConst;
 
@@ -74,6 +80,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mSenhaView = (EditText) findViewById(R.id.edSenha);
+
+        mLoginView.setText("a");
+        mSenhaView.setText("s");
 
         Button BtnLogin = (Button) findViewById(R.id.btnLogin);
         Button BtnEsqueciSenha = (Button) findViewById(R.id.btnEsqSenha);
@@ -149,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void loginTeste(){
         String login = mLoginView.getText().toString();
+        String senha = mSenhaView.getText().toString();
 
         if (login.equals("")){
             VarConst.cod_usu_logado = 1;
@@ -166,9 +176,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             VarConst.novasnotificacoes = true ;
         }
 
+        new UserLoginTask(login, senha).execute();
+        /*
         Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
         startActivity(tela);
-        finish();
+        finish();*/
     };
 
     private void attemptLogin() {
@@ -357,7 +369,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Resultado<Token>> {
 
         private final String mEmail;
         private final String mPassword;
@@ -368,36 +380,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected Resultado<Token> doInBackground(Void... params) {
+            new NotificacaoService().getEnviadas(UUID.randomUUID());
+            new NotificacaoService().getRecebidas(UUID.randomUUID());
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            Resultado<Token> resultado = new LoginService().login(mEmail, mPassword);
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return resultado;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Resultado<Token> resultado) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
+            if (resultado.isSucess() && resultado.getResult().getToken() != null &&
+                    !resultado.getResult().getToken().isEmpty()) {
                 finish();
             } else {
+                // Mensagens de erro. Mostrar na tela???
+                resultado.getMessages();
+
                 mSenhaView.setError(getString(R.string.error_invalid_autenticacao));
                 mSenhaView.requestFocus();
             }
