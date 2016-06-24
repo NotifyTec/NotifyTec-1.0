@@ -8,10 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.notifytec.contratos.Resultado;
+import com.notifytec.contratos.UsuarioModel;
+import com.notifytec.taks.EsqueceuSenhaTask;
+
 import funcoes.Funcoes;
 
-public class EsqueciSenha extends AppCompatActivity {
+public class EsqueciSenha extends BaseActivity {
     private boolean cancel;
+    private EsqueciSenha mActivity;
+
+    private Button btnNext;
+    private Button btnVoltar;
+    private EditText edRA_CPF;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,13 +29,12 @@ public class EsqueciSenha extends AppCompatActivity {
         setContentView(R.layout.activity_esqueci_senha);
 
         //Setando componentes
-        Button BtnNext = (Button) findViewById(R.id.btnNextStep);
-        Button BtnVoltar = (Button) findViewById(R.id.btnVoltar);
-
-        final EditText edRA_CPF = (EditText) findViewById(R.id.edRA_CPF);
+        btnNext = (Button) findViewById(R.id.btnNextStep);
+        btnVoltar = (Button) findViewById(R.id.btnVoltar);
+        edRA_CPF = (EditText) findViewById(R.id.edRA_CPF);
 
         //Setando o clique no botão Proximo Passo
-        BtnNext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cancel = false;
@@ -53,19 +62,40 @@ public class EsqueciSenha extends AppCompatActivity {
                 //TODO: validar RA ou CPF existente na base
 
                 else if (!cancel){
-                    Intent tela = new Intent(getBaseContext(), TrocarSenha.class);
-                    startActivity(tela);
-                    //finish();
+                    new EsqueceuSenhaTask(mActivity, ra_cpf).execute();
                 }
             }
         });
 
-        BtnVoltar.setOnClickListener(new View.OnClickListener() {
+        btnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+        mActivity = this;
+    }
+
+    public void habilitarCampos(boolean habilitar){
+        edRA_CPF.setEnabled(habilitar);
+        btnNext.setEnabled(habilitar);
+        btnVoltar.setEnabled(habilitar);
+    }
+
+    public void antesEsqueceuSenha(){
+        setCarregando(true, "Gerando token de redefinição...");
+    }
+
+    public void resultadoEsqueceuSenha(Resultado<UsuarioModel> resultado){
+        habilitarCampos(true);
+        setCarregando(false, null);
+
+        if(resultado.isSucess()){
+            Intent tela = new Intent(getBaseContext(), TrocarSenha.class);
+            startActivity(tela);
+        }else{
+            mostrarErro(resultado.getMessage());
+        }
     }
 
     private boolean isCPF(String dado){

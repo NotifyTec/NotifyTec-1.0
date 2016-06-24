@@ -9,7 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class TrocarSenha extends AppCompatActivity {
+import com.notifytec.contratos.Resultado;
+import com.notifytec.contratos.UsuarioModel;
+import com.notifytec.taks.ConfirmarEsqueceuSenhaTask;
+
+public class TrocarSenha extends BaseActivity {
+    private TrocarSenha mActivity;
+    private Button btnVoltar;
+    private Button btnAlterarSenha;
+    private EditText edToken;
+    private EditText edNovaSenha;
+    private EditText edNovaSenha2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,17 +27,17 @@ public class TrocarSenha extends AppCompatActivity {
         setContentView(R.layout.activity_trocar_senha);
 
         //Setando Botões
-        Button BtnVoltar = (Button) findViewById(R.id.btnVoltar);
-        Button BtnAlterarSenha = (Button) findViewById(R.id.btnAlterarSenha);
+        btnVoltar = (Button) findViewById(R.id.btnVoltar);
+        btnAlterarSenha = (Button) findViewById(R.id.btnAlterarSenha);
+
+        edToken = (EditText) findViewById(R.id.edToken);
+        edNovaSenha = (EditText) findViewById(R.id.edNova_Senha);
+        edNovaSenha2 = (EditText) findViewById(R.id.edNova_Senha2);
 
         //Setando Eventos Click
-        BtnAlterarSenha.setOnClickListener(new View.OnClickListener() {
+        btnAlterarSenha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText edToken = (EditText) findViewById(R.id.edToken);
-                EditText edNovaSenha = (EditText) findViewById(R.id.edNova_Senha);
-                EditText edNovaSenha2 = (EditText) findViewById(R.id.edNova_Senha2);
-
                 String token = edToken.getText().toString();
                 String senha1 = edNovaSenha.getText().toString();
                 String senha2 = edNovaSenha2.getText().toString();
@@ -44,36 +54,48 @@ public class TrocarSenha extends AppCompatActivity {
                     edNovaSenha2.setError(getString(R.string.error_field_required));
                     edNovaSenha2.requestFocus();
                 }
-                //Campos preenchidos
-                //Validar Token
-                else if(!validarToken(token)){
-                    edToken.setError(getString(R.string.error_token_invalid));
-                    edToken.requestFocus();
-                }
                 //Senhas são iguais?
                 else if (!senha1.equals(senha2)){
                     edNovaSenha.setError(getString(R.string.error_senhas_diferentes));
                     edNovaSenha.requestFocus();
                 }
                 else {
-                    //TODO: alterar senha usuario
-                    Toast.makeText(getBaseContext(), "Senha Alterada", Toast.LENGTH_LONG ).show();
-                    Intent tela = new Intent(getBaseContext(), LoginActivity.class);
-                    startActivity(tela);
-                    finish();
+                    new ConfirmarEsqueceuSenhaTask(mActivity, token, senha1).execute();
                 }
             }
         });
-        BtnVoltar.setOnClickListener(new View.OnClickListener() {
+        btnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+        mActivity = this;
     }
 
-    public boolean validarToken(String token){
-        //TODO: fazer validação token
-        return true;
+    public void habilitarCampos(boolean bloquear){
+        btnAlterarSenha.setEnabled(bloquear);
+        btnVoltar.setEnabled(bloquear);
+        edNovaSenha.setEnabled(bloquear);
+        edNovaSenha2.setEnabled(bloquear);
+        edToken.setEnabled(bloquear);
+    }
+
+    public void antesTrocarSenha(){
+        habilitarCampos(false);
+        setCarregando(true, "Alterando a senha...");
+    }
+
+    public void resultadoConfirmarEsqueceuSenha(Resultado<UsuarioModel> resultado){
+        habilitarCampos(true);
+        setCarregando(false, null);
+
+        if(resultado.isSucess()){
+            Intent tela = new Intent(getBaseContext(), LoginActivity.class);
+            startActivity(tela);
+            finish();
+        }else{
+            mostrarErro(resultado.getMessage());
+        }
     }
 }

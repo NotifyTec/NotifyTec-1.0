@@ -1,7 +1,12 @@
 package com.notifytec.service;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
+import com.notifytec.Dao.UsuarioDao;
 import com.notifytec.contratos.Resultado;
+import com.notifytec.contratos.Token;
+import com.notifytec.contratos.UsuarioModel;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +21,14 @@ import java.util.Map;
 
 public class RestService<T> {
 
-    private String _DOMINIO_ = "http://notifytec.azurewebsites.net/";
+    //private String _DOMINIO_ = "http://notifytec.azurewebsites.net/";
+    private String _DOMINIO_ = "http://10.0.2.2:8084/notifytec/";
     private Class<T> type;
+    private Context context;
 
-    public RestService(Class<T> type) {
+    public RestService(Class<T> type, Context context) {
         this.type = type;
+        this.context = context;
     }
 
     public String formatarUrl(String url) {
@@ -31,7 +39,11 @@ public class RestService<T> {
     }
 
     private String getAuthorizationToken(){
-        return "eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbiI6ImFuZHJvaWQiLCJlbWFpbCI6InRlc3RlQGRvbWFpbi5jb20iLCJhbHRlcm91U2VuaGEiOnRydWUsInBvZGVFbnZpYXIiOnRydWUsImp0aSI6ImMyYmIxYmEyLWYyYjMtNGM2My05ODIwLTFjNmI3NTJiOGVkYyJ9.H8Ze9GRvwp7KO9m4ZL_oIj3HjtjRw1n23bgfAqFuATpBWx336T5iNtAbcLNf4xQzSMQmsiPwmdxuGn5lUPWhRA";
+        UsuarioModel t = new UsuarioDao(context).get();
+        if(t == null)
+            return "";
+        return t.getToken();
+        //return "eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbiI6ImFuZHJvaWQiLCJlbWFpbCI6InRlc3RlQGRvbWFpbi5jb20iLCJhbHRlcm91U2VuaGEiOnRydWUsInBvZGVFbnZpYXIiOnRydWUsImp0aSI6ImMyYmIxYmEyLWYyYjMtNGM2My05ODIwLTFjNmI3NTJiOGVkYyJ9.H8Ze9GRvwp7KO9m4ZL_oIj3HjtjRw1n23bgfAqFuATpBWx336T5iNtAbcLNf4xQzSMQmsiPwmdxuGn5lUPWhRA";
     }
 
     private Resultado execute(String url, HttpMethod method, Object obj, Map<?, ?> params){
@@ -41,7 +53,7 @@ public class RestService<T> {
             t.getMessageConverters().add(new GsonHttpMessageConverter());
 
             HttpHeaders header = new HttpHeaders();
-            header.set("Authorization",getAuthorizationToken());
+            header.set("Authorization", getAuthorizationToken());
 
             HttpEntity entity;
             if(obj == null){
@@ -57,6 +69,9 @@ public class RestService<T> {
                 Resultado<List<T>> rl = new Resultado<>();
                 rl.merge(resultado.getBody());
 
+                if(!rl.isSucess())
+                    return rl;
+
                 List<T> list = new ArrayList<T>();
                 for (Object o : (ArrayList) resultado.getBody().getResult()) {
                     list.add(new Gson().fromJson(new Gson().toJson(o), type));
@@ -69,7 +84,10 @@ public class RestService<T> {
                 Resultado<T> r = new Resultado<>();
                 r.merge(resultado.getBody());
 
-                T res = new Gson().fromJson(resultado.getBody().getResult().toString(), type);
+                if(!r.isSucess())
+                    return r;
+
+                T res = new Gson().fromJson(new Gson().toJson(resultado.getBody().getResult()), type);
                 r.setResult(res);
 
                 return r;
@@ -99,13 +117,14 @@ public class RestService<T> {
         if(ex.getMessage().contains("401")){
             return getNaoAutorizado();
         }else{
-            return getErroGenerico();
+            return getErroGenerico(ex);
         }
     }
 
-    private Resultado getErroGenerico() {
+    private Resultado getErroGenerico(Exception ex) {
         Resultado r = new Resultado();
-        r.addError("Verifique a sua conexão com a internet.");
+        r.addError(ex.getMessage());
+        //r.addError("Verifique a sua conexão com a internet.");
         return r;
     }
 

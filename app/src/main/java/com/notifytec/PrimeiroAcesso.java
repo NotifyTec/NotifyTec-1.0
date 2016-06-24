@@ -9,18 +9,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.notifytec.Dao.UsuarioDao;
+import com.notifytec.contratos.Resultado;
+import com.notifytec.contratos.UsuarioModel;
+import com.notifytec.service.LoginService;
+import com.notifytec.service.RestService;
+import com.notifytec.service.UsuarioService;
+import com.notifytec.taks.RedefinirSenhaTask;
+
 import org.w3c.dom.Text;
 
-public class PrimeiroAcesso extends AppCompatActivity {
+public class PrimeiroAcesso extends BaseActivity {
+
+    private PrimeiroAcesso mActivity;
+    private EditText edSenha1;
+    private EditText edSenha2;
+    private Button btnConfirmar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_primeiro_acesso);
 
-        final EditText edSenha1 = (EditText) findViewById(R.id.edNova_Senha);
-        final EditText edSenha2 = (EditText) findViewById(R.id.edNova_Senha2);
-        Button btnConfirmar = (Button) findViewById(R.id.btnConfimar);
+        edSenha1 = (EditText) findViewById(R.id.edNova_Senha);
+        edSenha2 = (EditText) findViewById(R.id.edNova_Senha2);
+        btnConfirmar = (Button) findViewById(R.id.btnConfimar);
 
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,13 +57,36 @@ public class PrimeiroAcesso extends AppCompatActivity {
                 }
                 //tudo OK
                 else {
-                    Toast.makeText(getBaseContext(), "Senha alterada com sucesso", Toast.LENGTH_LONG).show();
-                    Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
-                    startActivity(tela);
-                    finish();
+                    new RedefinirSenhaTask(mActivity, senha1).execute();
                 }
             }
         });
 
+        mActivity = this;
+    }
+
+    public void habilitarCampos(boolean habilitar){
+        edSenha1.setEnabled(habilitar);
+        edSenha2.setEnabled(habilitar);
+        btnConfirmar.setEnabled(habilitar);
+    }
+
+    public void anteRedefinirSenha(){
+        habilitarCampos(false);
+        setCarregando(true, "Redefinindo senha...");
+    }
+
+    public void resultadoRedefinirSenha(Resultado<UsuarioModel> resultado){
+        habilitarCampos(true);
+        setCarregando(false, null);
+
+        if(resultado.isSucess()){
+            new UsuarioDao(getApplicationContext()).update(resultado.getResult());
+            Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
+            startActivity(tela);
+            finish();
+        }else{
+            mostrarErro(resultado.getMessage());
+        }
     }
 }

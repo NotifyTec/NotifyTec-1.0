@@ -33,8 +33,11 @@
     <string name="txtInfoFirstAcess">Primeiro acesso ao APP. Por favor, informe uma senha para substituir a padrão</string>
     <string name="txtInfoToken">Informe o token recebido por e-mail e a nova senha</string>
     <string name="title_activity_menu_principal">Menu Principal</string>
-    <string name="title_activity_menu_principal_aviso">Avisos</string>
-    <string name="title_activity_menu_principal_enquete">Enquetes</string>
+    <string name="title_activity_menu_principal_NotifyNaoLidas">Notificações Não Lidas</string>
+    <string name="title_activity_menu_principal_avisoAluno">Avisos Recebidos</string>
+    <string name="title_activity_menu_principal_enqueteAluno">Enquetes Recebidas</string>
+    <string name="title_activity_menu_principal_avisoProf">Avisos Enviados</string>
+    <string name="title_activity_menu_principal_enqueteProf">Enquetes Enviadas</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -49,6 +52,7 @@
     <string name="novaNot_expira">Expira em</string>
     <string name="novaNot_opcao">Opção</string>
     <string name="txtNovaOpcEnquete">*Use opção para criar enquetes</string>
+    <string name="error_NewEnqueteFieldRequiredOpc">Informe uma opção</string>
 
 
     <string-array name="curso_array">
@@ -67,5 +71,11 @@
         <item>5</item>
         <item>6</item>
     </string-array>
+
+
+    <string name="NovasNotifi_texto">Pressione sobre uma notificação para marcá-la como lida e enviar sua resposta</string>
+
+    <string name="testTagAux"></string>
+    <string name="testTagIdBinaryNotificacaoOpcao"></string>
 
 </resources>

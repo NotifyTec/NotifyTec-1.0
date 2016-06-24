@@ -33,8 +33,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.notifytec.Dao.UsuarioDao;
 import com.notifytec.contratos.Resultado;
 import com.notifytec.contratos.Token;
+import com.notifytec.contratos.UsuarioModel;
 import com.notifytec.service.LoginService;
 import com.notifytec.service.NotificacaoService;
 
@@ -46,7 +48,7 @@ import outros.VarConst;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -70,19 +72,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mSenhaView;
     private View mProgressView;
     private View mLoginFormView;
+    private Snackbar mSnackLoading;
+
+    public static final String LOG_OUT = "log-out-flag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        UsuarioModel usuario = new UsuarioDao(getApplicationContext()).get();
+        proximoPasso(usuario);
+
         // Set up the login form.
         mLoginView = (AutoCompleteTextView) findViewById(R.id.edLogin);
         populateAutoComplete();
 
         mSenhaView = (EditText) findViewById(R.id.edSenha);
-
-        mLoginView.setText("a");
-        mSenhaView.setText("s");
 
         Button BtnLogin = (Button) findViewById(R.id.btnLogin);
         Button BtnEsqueciSenha = (Button) findViewById(R.id.btnEsqSenha);
@@ -91,8 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         BtnLogin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginTeste();
-                //attemptLogin();
+                attemptLogin();
             }
         });
 
@@ -151,38 +156,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void loginTeste(){
-        String login = mLoginView.getText().toString();
-        String senha = mSenhaView.getText().toString();
-
-        if (login.equals("")){
-            VarConst.cod_usu_logado = 1;
-            VarConst.usuario_logado = "1";
-//            VarConst.nome_usu_logado = "Luis Fernando dos Santos silva sauro de oliveira";
-            VarConst.nome_usu_logado = "Luis Fernando dos Santos";
-            VarConst.podeEnviar = false;
-            VarConst.novasnotificacoes = false;
-        }
-        else {
-            VarConst.cod_usu_logado = 2;
-            VarConst.usuario_logado = "2";
-            VarConst.nome_usu_logado = "Jederson Donizete Zuchi";
-            VarConst.podeEnviar = true;
-            VarConst.novasnotificacoes = true ;
-        }
-
-        new UserLoginTask(login, senha).execute();
-        /*
-        Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
-        startActivity(tela);
-        finish();*/
-    };
-
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -217,26 +190,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         //"ok"
         else {
-            //TODO: AUTENTICAR USUARIO
-            if (autenticar(login, senha)){
-                //Usuario válido
-                if (isFirstAcess(login)){
-                    firstAcess();
-                }
-                else {
-                    Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
-                    startActivity(tela);
-                    finish();
-                }
-                // Show a progress spinner, and kick off a background task to
-                // perform the user login attempt.
-//                showProgress(true);
-//                mAuthTask = new UserLoginTask(login, senha);
-//                mAuthTask.execute((Void) null);
-            } else {
-                mLoginView.setError(getString(R.string.error_invalid_autenticacao));
-                mLoginView.requestFocus();
+            new UserLoginTask(login, senha).execute();
+        }
+    }
+
+    private void proximoPasso(UsuarioModel usuario){
+        if(usuario == null)
+            return;
+
+        if(!usuario.isAlterouSenha()){
+            firstAcess();
+            return;
+        } else if(usuario != null && usuario.getToken() != null ){
+            if(usuario.isPodeEnviar()){
+                abrirAvisos();
+            }else {
+                menuPrincipal();
             }
+            return;
         }
     }
 
@@ -246,24 +217,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         finish();
     }
 
+    private void menuPrincipal(){
+        Intent tela = new Intent(getBaseContext(), MenuPrincipal.class);
+        startActivity(tela);
+        finish();
+    }
+
     private void esqueciSenha(){
         Intent tela = new Intent(this, EsqueciSenha.class);
         startActivity(tela);
     }
 
-    private boolean autenticar(String login, String senha){
-        //TODO: ajustar
-        if (login.equals("1") && senha.equals("1")){
-            return true;
-        } else {
-            return false;
+    public void autenticar(Resultado<UsuarioModel> resultado){
+        if(!resultado.isSucess()){
+            mostrarErro(resultado.getMessage());
+        }else {
+            proximoPasso(resultado.getResult());
         }
     }
 
     private boolean isLoginValid(String login) {
 //        return email.contains("@");
         //TODO: ajustar
-        return login.length() > 2;
+        return login.length() != 0 ;
     }
 
     private boolean isFirstAcess(String login){
@@ -272,7 +248,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isSenhaValid(String senha) {
         //TODO: ajustar
-        return senha.length() > 2;
+        return senha.length() != 0;
     }
 
     /**
@@ -369,7 +345,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Resultado<Token>> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Resultado<UsuarioModel>> {
 
         private final String mEmail;
         private final String mPassword;
@@ -380,30 +356,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Resultado<Token> doInBackground(Void... params) {
-            new NotificacaoService().getEnviadas(UUID.randomUUID());
-            new NotificacaoService().getRecebidas(UUID.randomUUID());
+        protected void onPreExecute() {
+            setCarregando(true, "Realizando login...");
+            super.onPreExecute();
+        }
 
-            Resultado<Token> resultado = new LoginService().login(mEmail, mPassword);
+        @Override
+        protected Resultado<UsuarioModel> doInBackground(Void... params) {
+            Resultado<UsuarioModel> resultado = new LoginService(getApplicationContext()).login(mEmail, mPassword);
 
             return resultado;
         }
 
         @Override
-        protected void onPostExecute(final Resultado<Token> resultado) {
+        protected void onPostExecute(final Resultado<UsuarioModel> resultado) {
+            setCarregando(false, null);
+
             mAuthTask = null;
             showProgress(false);
 
-            if (resultado.isSucess() && resultado.getResult().getToken() != null &&
-                    !resultado.getResult().getToken().isEmpty()) {
-                finish();
-            } else {
-                // Mensagens de erro. Mostrar na tela???
-                resultado.getMessages();
-
-                mSenhaView.setError(getString(R.string.error_invalid_autenticacao));
-                mSenhaView.requestFocus();
-            }
+            autenticar(resultado);
         }
 
         @Override

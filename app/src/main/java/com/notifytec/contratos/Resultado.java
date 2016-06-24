@@ -45,7 +45,15 @@ public class Resultado<T> {
     public List<String> getMessages(){
         return this.messages;
     }
-    
+
+    public String getMessage(){
+        String m = "";
+        for(String me : getMessages()){
+            m += me;
+        }
+        return m;
+    }
+
     public boolean isSucess(){
         return this.success;
     }

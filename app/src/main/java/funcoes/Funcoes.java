@@ -1,11 +1,28 @@
 package funcoes;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.UUID;
 
 /**
  * Created by Bruno on 19/05/2016.
  */
 public class Funcoes {
+    public static boolean conectadoAInternet(Context ctx) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public static boolean isCPFValid(String CPF) {
         // considera-se erro CPF's formados por uma sequencia de numeros iguais
         if (CPF.equals("00000000000") || CPF.equals("11111111111") ||
@@ -70,4 +87,119 @@ public class Funcoes {
     public static String zeroEsquerda(int valor, int tam){
         return String.format("%0" + String.valueOf(tam) + "d", valor);
     }
+
+    public static int booleanToInt (boolean valor){
+        if (valor){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public static String getUUID(){
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
+
+    public static Date StringToDate(String data){
+        //Converte uma String de data no formata dd/MM/yyyy hh:mm:ss, para um date
+        DateFormat df = new SimpleDateFormat ("dd/MM/yyyy hh:mm:ss");
+        Date dt = null;
+        try {
+            dt = df.parse (data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dt;
+    }
+
+    public static Date StringToDate2(String data){
+        //Converte uma String de data no formata dd/MM/yyyy hh:mm:ss, para um date
+        DateFormat df = new SimpleDateFormat ("yyyy/MM/dd hh:mm:ss");
+        Date dt = null;
+        try {
+            dt = df.parse (data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dt;
+    }
+
+    public static String dateTimeToSQL(Date date, boolean pHour){
+        DateFormat dateFormat;
+        if (pHour){
+            dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        } else {
+            dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        }
+        return dateFormat.format(date);
+    }
+
+    public static String ajustaDataHoraDisplay(Date date){
+        if(date == null)
+            return "";
+
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return dateFormat.format(date);
+    }
+
+    public static String ajustaDataHoraDisplayResumo(Date date){
+        if(date == null)
+            return "";
+
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm");
+        return dateFormat.format(date);
+    }
+
+    public static String ajustaDataHoraDisplay(String data){
+        if(data == null || data.isEmpty())
+            return "";
+        return ajustaDataDisplay(data) + " " + ajustaHoraDisplay(data);
+    }
+
+    public static String ajustaDataHoraDisplayResumo(String data){
+        if(data == null || data.isEmpty())
+            return "";
+        return ajustaDataDisplay(data).substring(0,5) + " - " + ajustaHoraDisplay(data);
+    }
+
+    public static String ajustaDataDisplay(String data){
+        if(data == null || data.isEmpty())
+            return "";
+        String retorno = "";
+        retorno = data.substring(8, 10) + "/";
+        retorno += data.substring(5, 7) + "/";
+        retorno += data.substring(0, 4);
+        return retorno;
+    }
+
+    public static String ajustaHoraDisplay(String hora){
+        return hora.substring(11, 16);
+    }
+
+    public static String textToSQL(String dado){
+        if (dado == null || dado.equals("")){
+            return "NULL";
+        } else {
+            return "'" + dado + "'";
+        }
+    }
+
+    public static void msgSimples(Context ctx, String title, String mensagem) {
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ctx);
+        dlgAlert.setTitle(title);
+        dlgAlert.setMessage(mensagem);
+        dlgAlert.setPositiveButton("OK", null);
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
+    }
+
 }

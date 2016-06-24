@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "780871100372",
+    "firebase_url": "https://project-6193512138794008721.firebaseio.com",
+    "project_id": "project-6193512138794008721",
+    "storage_bucket": "project-6193512138794008721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780871100372:android:839142d2004eba34",
+        "android_client_info": {
+          "package_name": "com.notifytec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780871100372-87einhcs6fn6jcolh774li433m2fstlr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK5wNVb0h5pOOJmW_N-_P1YRPDJVSBsLE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
